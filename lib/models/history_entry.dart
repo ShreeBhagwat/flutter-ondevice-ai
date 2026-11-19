@@ -24,22 +24,22 @@ class HistoryEntry {
   Prediction? get top => predictions.isEmpty ? null : predictions.first;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'image': imageFileName,
-        'predictions': predictions.map((p) => p.toJson()).toList(),
-        'createdAt': createdAt.toIso8601String(),
-        'ms': inferenceMs,
-        'model': modelName,
-      };
+    'id': id,
+    'image': imageFileName,
+    'predictions': predictions.map((p) => p.toJson()).toList(),
+    'createdAt': createdAt.toIso8601String(),
+    'ms': inferenceMs,
+    'model': modelName,
+  };
 
   factory HistoryEntry.fromJson(Map<String, dynamic> json) => HistoryEntry(
-        id: json['id'] as String,
-        imageFileName: json['image'] as String,
-        predictions: (json['predictions'] as List)
-            .map((p) => Prediction.fromJson(p as Map<String, dynamic>))
-            .toList(),
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        inferenceMs: json['ms'] as int,
-        modelName: json['model'] as String,
-      );
+    id: json['id'] as String,
+    imageFileName: json['image'] as String,
+    predictions: (json['predictions'] as List)
+        .map((p) => Prediction.fromJson(p as Map<String, dynamic>))
+        .toList(),
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    inferenceMs: json['ms'] as int,
+    modelName: json['model'] as String,
+  );
 }

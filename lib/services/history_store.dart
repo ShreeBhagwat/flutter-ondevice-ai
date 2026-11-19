@@ -12,8 +12,8 @@ import '../models/prediction.dart';
 ///   `history/history.json`  ← list of entries (newest first)
 ///   `history/ID.jpg`        ← a copy of each photo
 class HistoryStore {
-  late final Directory _dir;
-  late final File _indexFile;
+  late Directory _dir; // not final: load() may be retried
+  late File _indexFile;
   final List<HistoryEntry> _entries = [];
 
   /// Newest first.
@@ -30,7 +30,9 @@ class HistoryStore {
         final list = jsonDecode(await _indexFile.readAsString()) as List;
         _entries
           ..clear()
-          ..addAll(list.map((e) => HistoryEntry.fromJson(e as Map<String, dynamic>)));
+          ..addAll(
+            list.map((e) => HistoryEntry.fromJson(e as Map<String, dynamic>)),
+          );
       } catch (_) {
         // Corrupt file: start with an empty history rather than crash.
         _entries.clear();
@@ -81,6 +83,7 @@ class HistoryStore {
     await _save();
   }
 
-  Future<void> _save() => _indexFile
-      .writeAsString(jsonEncode(_entries.map((e) => e.toJson()).toList()));
+  Future<void> _save() => _indexFile.writeAsString(
+    jsonEncode(_entries.map((e) => e.toJson()).toList()),
+  );
 }

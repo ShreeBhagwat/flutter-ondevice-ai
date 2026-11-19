@@ -28,7 +28,8 @@ class Classifier {
 
   late final Interpreter _interpreter;
   late final List<String> _labels;
-  late final int _inputSize; // e.g. 300 for EfficientNet-Lite4, 224 for MobileNet
+  late final int
+  _inputSize; // e.g. 300 for EfficientNet-Lite4, 224 for MobileNet
 
   // ---------------------------------------------------------------------------
   // STEP 1: LOAD
@@ -52,9 +53,13 @@ class Classifier {
 
     // Handy for class: see exactly what the model wants and returns.
     // ignore: avoid_print
-    print('[${config.name}] input : ${input.shape} ${input.type} ${input.params}');
+    print(
+      '[${config.name}] input : ${input.shape} ${input.type} ${input.params}',
+    );
     // ignore: avoid_print
-    print('[${config.name}] output: ${output.shape} ${output.type} ${output.params}');
+    print(
+      '[${config.name}] output: ${output.shape} ${output.type} ${output.params}',
+    );
   }
 
   /// Takes a photo file and returns the model's top [topK] guesses.
@@ -81,7 +86,9 @@ class Classifier {
 
     // Centre-crop to a square first, so the object isn't squashed.
     // (Models were trained on undistorted images → better accuracy.)
-    final side = decoded.width < decoded.height ? decoded.width : decoded.height;
+    final side = decoded.width < decoded.height
+        ? decoded.width
+        : decoded.height;
     final cropped = img.copyCrop(
       decoded,
       x: (decoded.width - side) ~/ 2,
@@ -91,8 +98,12 @@ class Classifier {
     );
 
     // Resize to exactly what the model was trained on.
-    final resized = img.copyResize(cropped,
-        width: size, height: size, interpolation: img.Interpolation.average);
+    final resized = img.copyResize(
+      cropped,
+      width: size,
+      height: size,
+      interpolation: img.Interpolation.average,
+    );
 
     // size*size pixels × 3 colours, each 0..255, in R,G,B order.
     return resized.getBytes(order: img.ChannelOrder.rgb);
@@ -111,9 +122,9 @@ class Classifier {
       input.data = rgb;
     } else {
       // Float model: one 32-bit number per colour value (0.0..255.0).
-      input.data = Float32List.fromList(
-        rgb.map((v) => v.toDouble()).toList(),
-      ).buffer.asUint8List();
+      input.data = Float32List.fromList(rgb.map((v) => v.toDouble()).toList())
+          .buffer
+          .asUint8List();
     }
 
     _interpreter.invoke(); // <- the actual AI happens here

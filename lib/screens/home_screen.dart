@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Classifier? _classifier;
   bool _ready = false; // model + history loaded
   bool _busy = false; // picking or analysing
+  String? _startupError; // shown instead of an endless spinner
 
   // What is currently shown on screen.
   File? _image;
@@ -40,8 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _init() async {
-    await _history.load();
-    await _loadModel(_model);
+    setState(() => _startupError = null);
+    try {
+      await _history.load();
+      await _loadModel(_model);
+    } catch (e, st) {
+      debugPrint('Startup failed: $e\n$st');
+      if (mounted) setState(() => _startupError = '$e');
+    }
   }
 
   Future<void> _loadModel(ModelConfig model) async {
@@ -186,7 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: !_ready
+      body: _startupError != null
+          ? _buildStartupError()
+          : !_ready
           ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -214,7 +223,9 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: canAct ? () => _pickImage(ImageSource.camera) : null,
+                  onPressed: canAct
+                      ? () => _pickImage(ImageSource.camera)
+                      : null,
                   icon: const Icon(Icons.camera_alt),
                   label: const Text('Camera'),
                 ),
@@ -222,13 +233,47 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: canAct ? () => _pickImage(ImageSource.gallery) : null,
+                  onPressed: canAct
+                      ? () => _pickImage(ImageSource.gallery)
+                      : null,
                   icon: const Icon(Icons.photo_library),
                   label: const Text('Gallery'),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStartupError() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 48),
+            const SizedBox(height: 12),
+            const Text(
+              'Could not start the AI',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _startupError!,
+              textAlign: TextAlign.center,
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: _init,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Try again'),
+            ),
+          ],
         ),
       ),
     );
@@ -289,8 +334,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const ListTile(
             leading: Icon(Icons.help_outline),
             title: Text('Not very sure'),
-            subtitle: Text('Try a closer, well-lit photo of one object, '
-                'or switch model and Retry.'),
+            subtitle: Text(
+              'Try a closer, well-lit photo of one object, '
+              'or switch model and Retry.',
+            ),
           ),
         ),
       ..._results.map(_buildResultTile),

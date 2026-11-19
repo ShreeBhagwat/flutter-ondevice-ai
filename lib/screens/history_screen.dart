@@ -108,8 +108,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   static String _formatDate(DateTime d) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     String two(int n) => n.toString().padLeft(2, '0');
     return '${d.day} ${months[d.month - 1]} ${two(d.hour)}:${two(d.minute)}';

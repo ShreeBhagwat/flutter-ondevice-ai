@@ -13,7 +13,7 @@ class Prediction {
   Map<String, dynamic> toJson() => {'label': label, 'confidence': confidence};
 
   factory Prediction.fromJson(Map<String, dynamic> json) => Prediction(
-        json['label'] as String,
-        (json['confidence'] as num).toDouble(),
-      );
+    json['label'] as String,
+    (json['confidence'] as num).toDouble(),
+  );
 }

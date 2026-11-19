@@ -38,6 +38,9 @@ dependencies:
   image_picker: ^1.2.4
   image: ^4.13.1
   path_provider: ^2.1.6
+  # Pinned: path_provider_android 2.3.x + jni 1.2.0 crash on startup
+  # (ClassNotFoundException for android.content.Context). 2.2.x has no jni.
+  path_provider_android: ">=2.2.5 <2.3.0"
 
 dev_dependencies:
   flutter_test:
