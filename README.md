@@ -17,7 +17,12 @@ flutter pub get
 flutter run --release   # full speed; use plain `flutter run` for hot reload
 ```
 The iOS simulator has no camera, so use the **Gallery** button there.
-**iOS on a real device:** open `ios/Runner.xcworkspace` in Xcode and choose *your own* team under Signing & Capabilities.
+**iOS on a real device:** set your Apple team so the app can be signed. The easiest way is to create `ios/Flutter/Signing.xcconfig` (git-ignored) containing:
+```
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+```
+You can find your team ID in Xcode → Settings → Accounts, or at developer.apple.com → Membership.
+Alternatively, open `ios/Runner.xcworkspace` in Xcode and choose your team under Signing & Capabilities, but don't commit that change.
 
 ## Where to look
 | File | What it teaches |

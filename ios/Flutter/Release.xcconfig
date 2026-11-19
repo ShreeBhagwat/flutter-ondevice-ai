@@ -1,2 +1,5 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
+
+// Optional, git-ignored: your own Apple team ID (see README)
+#include? "Signing.xcconfig"
